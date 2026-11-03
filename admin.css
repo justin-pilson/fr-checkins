@@ -1,0 +1,114 @@
+/* Dashboard: same paper + charcoal look as the booking page. Summary on top, then "still needs to book" beside the booked list. */
+:root{
+  --paper:#E8E5DE; --card:#F4F2ED; --ink:#1E1D1B; --muted:#6B675F; --faint:#9C978C;
+  --line:#CDC8BC; --hover:#E9E5DC; --err:#9B3B2A; --ok:#3E5B3A; --wait:#8A6A1F;
+  --char:#1F1E1D; --cream:#ECE9E2; --cream-dim:#A9A59A;
+  --display:"Playfair Display",Georgia,"Times New Roman",serif;
+  --body:"Jost","Futura","Century Gothic","Avenir Next",system-ui,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background-color:var(--paper);color:var(--ink);font:400 16px/1.5 var(--body);-webkit-font-smoothing:antialiased;
+  background-image:repeating-linear-gradient(0deg,rgba(60,50,30,.035) 0 1px,transparent 1px 3px),repeating-linear-gradient(90deg,rgba(60,50,30,.025) 0 1px,transparent 1px 4px)}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid currentColor;outline-offset:3px}
+a{color:inherit}
+[hidden]{display:none!important}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+.wrap{max-width:1100px;margin:0 auto;padding-top:max(44px,env(safe-area-inset-top,0px));padding-bottom:96px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:22px}
+.top{margin-bottom:10px}
+.brandrow{display:flex;align-items:center;gap:14px;margin-bottom:26px}
+.logo{height:42px;width:auto;display:block}
+.eyebrow{font:500 12px/1.3 var(--body);letter-spacing:.24em;text-transform:uppercase;color:var(--muted);margin:0}
+h1{font:400 clamp(42px,6.5vw,72px)/1 var(--display);letter-spacing:-.01em;margin:0;text-wrap:balance}
+h1 em,h2 em{font-style:italic}
+h2{font:400 26px/1.15 var(--display);margin:0 0 16px}
+
+.panel{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:28px;min-width:0;box-shadow:0 1px 0 rgba(0,0,0,.03),0 14px 30px -24px rgba(0,0,0,.3)}
+.stitch{position:relative}
+.stitch::after{content:"";position:absolute;inset:7px;border:1px dashed var(--line);border-radius:2px;pointer-events:none}
+.panel > *{position:relative;z-index:1}
+
+input{font:400 16px/1.3 var(--body);color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:2px;padding:13px 14px;width:100%;min-width:0}
+input::placeholder{color:var(--faint)}
+.frow{display:flex;gap:10px;flex-wrap:wrap}
+.frow input{flex:1 1 220px}
+.btn{background:var(--ink);color:var(--cream);border:0;border-radius:2px;padding:14px 22px;font:500 12.5px/1 var(--body);letter-spacing:.2em;text-transform:uppercase;white-space:nowrap}
+.btn:hover{background:#3A3835}
+.btn.small{padding:11px 16px;font-size:11.5px}
+.btn.light{background:var(--cream);color:var(--ink)}
+.btn.light:hover{background:#FFFFFF}
+.hint{margin:0 0 8px;font-size:14px;color:var(--muted)}
+.error{margin:12px 0 0;color:var(--err);font-size:14px}
+.gate{max-width:560px}
+
+/* google banner: the dark tag look */
+.banner{background:var(--char);color:var(--cream);border-radius:4px;padding:18px 22px;display:flex;align-items:center;justify-content:space-between;gap:14px 24px;flex-wrap:wrap}
+.banner p{margin:0;flex:1 1 320px;color:var(--cream-dim)}
+.banner b{color:var(--cream);font-weight:500}
+.banner.warn{box-shadow:inset 4px 0 0 #D9A441}
+.banner .btn{background:var(--cream);color:var(--ink)}
+.banner .btn:hover{background:#FFFFFF}
+
+/* score */
+.score{display:flex;align-items:center;gap:20px 40px;flex-wrap:wrap}
+.score-num{display:flex;align-items:baseline;gap:12px}
+.score-num b{font:400 76px/1 var(--display);font-variant-numeric:tabular-nums}
+.score-num span{font:500 12px/1.3 var(--body);letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+.score-text{flex:1 1 280px}
+.bar{height:10px;background:var(--paper);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--ink);transition:width .5s ease}
+#score-sub{margin:10px 0 0;color:var(--muted)}
+
+.cols{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:22px;align-items:start}
+
+/* still to book */
+.todo-group{margin-bottom:18px}
+.group-label{font:500 11.5px/1.3 var(--body);letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+.group-label small{letter-spacing:.06em;text-transform:none;font-size:12.5px}
+.names{display:flex;flex-wrap:wrap;gap:8px}
+.tag{display:inline-flex;flex-direction:column;gap:2px;background:var(--paper);border:1px solid var(--line);border-radius:3px;padding:8px 12px}
+.tag span{font:400 17px/1.2 var(--display)}
+.tag small{font:500 10px/1.3 var(--body);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.all-done{font:italic 400 22px/1.3 var(--display);margin:0 0 6px}
+#copy-reminder{margin-top:4px}
+#copied{margin-top:10px}
+
+/* booked list */
+.filters{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.chip{background:transparent;border:1px solid var(--line);border-radius:2px;padding:8px 13px;font:500 11.5px/1 var(--body);letter-spacing:.14em;text-transform:uppercase}
+.chip:hover{border-color:var(--ink)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--cream);border-color:var(--ink)}
+.day-head{font:italic 400 19px/1.2 var(--display);margin:22px 0 4px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.row{display:grid;grid-template-columns:78px minmax(0,1fr) auto;gap:6px 16px;padding:14px 0;border-bottom:1px dashed var(--line);align-items:start}
+.row.past{opacity:.5}
+.row .t{font:400 19px/1.3 var(--display);font-variant-numeric:tabular-nums}
+.who{font-weight:500}
+.meta{font-size:14px;color:var(--muted);overflow-wrap:anywhere;display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;margin-top:3px}
+.note{font:italic 400 15px/1.4 var(--display);color:var(--muted);margin-top:6px}
+.pill{font:500 10px/1 var(--body);letter-spacing:.16em;text-transform:uppercase;padding:5px 8px;border-radius:2px;border:1px solid currentColor}
+.pill.ok{color:var(--ok)}
+.pill.wait{color:var(--wait)}
+.pill.bad{color:var(--err)}
+.pill.test{color:var(--muted);border-style:dashed}
+.cancel{background:none;border:0;padding:4px 0;font:500 11px/1 var(--body);letter-spacing:.16em;text-transform:uppercase;color:var(--muted);text-decoration:underline;text-underline-offset:4px}
+.cancel:hover{color:var(--err)}
+.confirm{grid-column:1/-1;display:flex;align-items:center;gap:10px 14px;flex-wrap:wrap;background:var(--paper);border:1px solid var(--line);border-radius:3px;padding:12px 14px;font-size:14.5px}
+.confirm p{margin:0;flex:1 1 240px}
+.confirm .btn{background:var(--err)}
+.link{background:none;border:0;padding:0;font:500 11.5px/1 var(--body);letter-spacing:.16em;text-transform:uppercase;text-decoration:underline;text-underline-offset:4px;color:var(--muted)}
+.empty{font:italic 400 18px/1.4 var(--display);color:var(--muted);margin:8px 0 0}
+
+/* settings */
+.settings summary{cursor:pointer;font:500 12px/1 var(--body);letter-spacing:.2em;text-transform:uppercase;padding:2px 0}
+.settings[open] summary{margin-bottom:18px}
+#pass-form{margin-top:20px}
+#pass-msg{margin-top:10px}
+
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--char);color:var(--cream);padding:12px 18px;border-radius:3px;font-size:14.5px;box-shadow:0 14px 30px -12px rgba(0,0,0,.5);max-width:calc(100% - 32px);z-index:20}
+
+@media (max-width:860px){.cols{grid-template-columns:1fr}}
+@media (max-width:520px){.panel{padding:22px 18px}.row{grid-template-columns:64px minmax(0,1fr)}.row .cancel{grid-column:2;justify-self:start}.score-num b{font-size:60px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}

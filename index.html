@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>F&amp;R Check-ins</title>
+<meta name="description" content="Book your 15-minute check-in with the F&R internal team.">
+<link rel="icon" href="logo-ink.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&display=swap">
+<style>
+/* Layout: screen 1 is a grid of exec name cards; screen 2 stacks the day calendar over hanging time tags on the left, with a dark garment tag on the right that fills in as you pick. */
+:root{
+  --paper:#E8E5DE; --card:#F4F2ED; --ink:#1E1D1B; --muted:#6B675F; --faint:#9C978C;
+  --line:#CDC8BC; --rule:#8C887B; --hover:#E9E5DC; --err:#9B3B2A;
+  --char:#1F1E1D; --cream:#ECE9E2; --cream-dim:#A9A59A;
+  --display:"Playfair Display",Georgia,"Times New Roman",serif;
+  --body:"Jost","Futura","Century Gothic","Avenir Next",system-ui,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background-color:var(--paper);color:var(--ink);font:400 16px/1.5 var(--body);-webkit-font-smoothing:antialiased;
+  background-image:repeating-linear-gradient(0deg,rgba(60,50,30,.035) 0 1px,transparent 1px 3px),repeating-linear-gradient(90deg,rgba(60,50,30,.025) 0 1px,transparent 1px 4px)}
+button{font:inherit;color:inherit;cursor:pointer}
+button:disabled{cursor:default}
+:focus-visible{outline:2px solid currentColor;outline-offset:3px}
+a{color:inherit}
+
+.wrap{max-width:1180px;margin:0 auto;padding-top:max(48px,env(safe-area-inset-top,0px));padding-bottom:96px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));animation:rise .35s ease-out both}
+@keyframes rise{from{opacity:.4;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.eyebrow{font:500 12px/1.3 var(--body);letter-spacing:.24em;text-transform:uppercase;color:var(--muted);margin:0}
+h1{font:400 clamp(46px,7.5vw,86px)/.98 var(--display);letter-spacing:-.01em;margin:14px 0 0;text-wrap:balance}
+h1 em,h2 em{font-style:italic}
+.lede{font-size:18px;color:var(--muted);max-width:52ch;margin:18px 0 0}
+.brandrow{display:flex;align-items:center;gap:14px;margin-bottom:34px}
+.logo{height:46px;width:auto;display:block}
+.sb{display:inline-block;width:16px;height:16px;border-radius:50%;flex:none;box-shadow:inset 0 0 0 1.5px rgba(0,0,0,.18);
+  background:radial-gradient(circle at 36% 36%,var(--ink) 0 1.2px,transparent 1.8px),radial-gradient(circle at 64% 36%,var(--ink) 0 1.2px,transparent 1.8px),
+  radial-gradient(circle at 36% 64%,var(--ink) 0 1.2px,transparent 1.8px),radial-gradient(circle at 64% 64%,var(--ink) 0 1.2px,transparent 1.8px),var(--cream)}
+.bc{height:30px;background:repeating-linear-gradient(90deg,currentColor 0 1px,transparent 1px 3px,currentColor 3px 5px,transparent 5px 6px,currentColor 6px 7px,transparent 7px 10px,currentColor 10px 11px,transparent 11px 12px,currentColor 12px 14px,transparent 14px 17px)}
+.stitch{position:relative}
+.stitch::after{content:"";position:absolute;inset:7px;border:1px dashed var(--line);border-radius:2px;pointer-events:none}
+.step-h{display:flex;align-items:baseline;gap:12px;margin:0 0 18px;flex-wrap:wrap}
+.step-n{font:500 12px/1 var(--body);letter-spacing:.2em;color:var(--muted)}
+.step-h h2{font:400 28px/1.1 var(--display);margin:0}
+.aside{margin-left:auto;font-size:14px;color:var(--muted)}
+.btn{background:var(--ink);color:var(--cream);border:0;border-radius:2px;padding:15px 24px;font:500 13px/1 var(--body);letter-spacing:.2em;text-transform:uppercase;white-space:nowrap}
+.btn:disabled{opacity:.35}
+.note{margin:0;color:var(--muted);max-width:44ch}
+.empty{color:var(--muted);font:italic 400 19px/1.45 var(--display);margin:6px 0 0;max-width:38ch}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:30px;min-width:0;box-shadow:0 1px 0 rgba(0,0,0,.03),0 14px 30px -24px rgba(0,0,0,.3)}
+@keyframes swing{0%{transform:rotate(8deg)}30%{transform:rotate(-5deg)}55%{transform:rotate(3deg)}80%{transform:rotate(-1deg)}100%{transform:rotate(0)}}
+@keyframes pulse{50%{opacity:.45}}
+.loading{margin-top:52px;font:italic 400 22px/1.4 var(--display);color:var(--muted);animation:pulse 1.4s ease-in-out infinite}
+
+/* screen 1 */
+.pick{margin-top:52px}
+.grp{margin:22px 0 12px}
+.people{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+.person{position:relative;display:flex;background:var(--card);border:1px solid var(--line);border-radius:3px;overflow:hidden;padding:0;text-align:left;min-height:76px}
+.person .k{width:46px;background:var(--ink);display:grid;place-items:center;flex:none}
+.person .v{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:5px;padding:14px 44px 14px 16px;transition:background .15s}
+.pname{font:400 21px/1.15 var(--display)}
+.prole{font:500 10.5px/1.3 var(--body);letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.arr{position:absolute;right:18px;top:50%;width:9px;height:9px;border-top:1.5px solid var(--ink);border-right:1.5px solid var(--ink);transform:translateY(-50%) rotate(45deg);opacity:.35;transition:opacity .15s,right .2s}
+.person:not(:disabled):hover .v{background:var(--hover)}
+.person:not(:disabled):hover .arr{opacity:1;right:14px}
+.person:disabled{background:transparent;border-style:dashed;opacity:.55}
+.person:disabled .k{background:var(--line)}
+.person:disabled .arr{display:none}
+
+/* screen 2 */
+.s2{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:40px;align-items:start;margin-top:44px}
+.left{display:grid;gap:24px;min-width:0}
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.dow{font:500 11px/1 var(--body);letter-spacing:.18em;text-transform:uppercase;color:var(--muted);text-align:center;padding-bottom:6px}
+.day{min-height:84px;border:1px solid var(--line);background:var(--paper);border-radius:3px;display:flex;flex-direction:column;align-items:flex-start;padding:8px 9px;text-align:left;transition:background .2s,border-color .2s}
+.day .mo{font:500 10px/1 var(--body);letter-spacing:.16em;text-transform:uppercase;color:var(--muted);min-height:10px}
+.day .num{font:400 27px/1 var(--display);margin-top:4px}
+.day .cnt{margin-top:auto;font-size:12px;color:var(--muted)}
+.day .cnt b{font-weight:600;color:var(--ink)}
+.day:not(:disabled):hover{border-color:var(--ink)}
+.day.on{background:var(--ink);border-color:var(--ink);color:var(--cream)}
+.day.on .mo,.day.on .cnt,.day.on .cnt b{color:var(--cream)}
+.day:disabled{background:transparent;border-style:dashed;opacity:.5}
+.hint{margin:-8px 0 14px;font-size:14.5px;color:var(--muted)}
+.rail{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));grid-auto-rows:138px;column-gap:12px;background:repeating-linear-gradient(180deg,var(--rule) 0 2px,transparent 2px 138px)}
+.htag{position:relative;margin-top:28px;height:104px;background:var(--paper);border:1px solid var(--line);border-radius:7px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:3px;padding:0 6px 10px;text-align:center;
+  box-shadow:0 8px 16px -12px rgba(0,0,0,.45);transform-origin:50% -28px;transition:transform .45s cubic-bezier(.3,1.6,.5,1),background .2s}
+.htag::before{content:"";position:absolute;left:50%;top:-28px;width:1px;height:38px;background:var(--ink)}
+.htag::after{content:"";position:absolute;left:50%;top:9px;width:10px;height:10px;margin-left:-5px;border-radius:50%;border:1.5px solid var(--rule);background:var(--card)}
+.htag .t{font:400 22px/1 var(--display);font-variant-numeric:tabular-nums}
+.htag .s{font:500 10px/1 var(--body);letter-spacing:.2em;color:var(--muted)}
+.htag .w{margin-top:5px;padding-top:6px;border-top:1px dashed var(--line);width:88%;font-size:11.5px;line-height:1.25;color:var(--muted)}
+.htag:hover{transform:rotate(-4deg)}
+.htag.on{background:var(--ink);border-color:var(--ink);color:var(--cream)}
+.htag.on .s,.htag.on .w{color:var(--cream-dim)}
+.htag.on .w{border-top-color:rgba(236,233,226,.25)}
+.donep{display:grid;gap:18px;justify-items:start;padding-block:40px}
+.donep h2{font:400 clamp(44px,7vw,76px)/1 var(--display);margin:0}
+
+/* the live tag */
+.tagcol{position:sticky;top:24px;padding-top:64px}
+.ltag{position:relative;background:var(--char);color:var(--cream);border-radius:16px;padding:64px 26px 24px;box-shadow:0 30px 50px -30px rgba(0,0,0,.55);transform-origin:50% -64px}
+.ltag::before{content:"";position:absolute;left:50%;top:-64px;width:1.5px;height:92px;background:var(--ink)}
+.ltag::after{content:"";position:absolute;inset:9px;border:1px dashed rgba(236,233,226,.22);border-radius:10px;pointer-events:none}
+.ltag.is-done{animation:swing 1.8s cubic-bezier(.3,.7,.4,1) both}
+.eye{position:absolute;left:50%;top:20px;width:16px;height:16px;margin-left:-8px;border-radius:50%;border:2px solid #57544E;background:var(--paper);z-index:1}
+.ltag .eyebrow{color:var(--cream-dim);text-align:center}
+.lt-name{font:italic 400 32px/1.1 var(--display);margin:10px 0 6px;text-align:center;text-wrap:balance}
+.notyou{display:block;margin:0 auto 16px;background:none;border:0;padding:4px;font:500 11px/1 var(--body);letter-spacing:.18em;text-transform:uppercase;color:var(--cream-dim);text-decoration:underline;text-underline-offset:4px;position:relative;z-index:1}
+.notyou:hover{color:var(--cream)}
+.spacer{height:16px}
+.ltag dl{margin:0 0 20px}
+.lt-row{display:grid;grid-template-columns:60px 1fr;gap:12px;padding:11px 0;border-top:1px dashed rgba(236,233,226,.18);align-items:baseline}
+.lt-row dt{font:500 10.5px/1.6 var(--body);letter-spacing:.2em;text-transform:uppercase;color:var(--cream-dim)}
+.lt-row dd{margin:0;font:400 18px/1.3 var(--display);min-width:0;overflow-wrap:anywhere}
+.ph{color:#7A766D;font-style:italic;font-size:16px}
+.ltag .btn{background:var(--cream);color:var(--ink);width:100%;position:relative;z-index:1}
+.ltag .btn:not(:disabled):hover{background:#FFFFFF}
+.lt-help{margin:10px 0 0;text-align:center;font-size:13px;color:var(--cream-dim)}
+.lt-err{margin:12px 0 0;text-align:center;font-size:14px;color:#E8A491}
+.ltag .bc{color:var(--cream);margin-top:22px;opacity:.85}
+.code{margin:8px 0 0;text-align:center;font:500 10px/1 var(--body);letter-spacing:.3em;text-transform:uppercase;color:var(--cream-dim)}
+.stamp{position:absolute;top:24px;right:20px;border:1.5px solid var(--cream);padding:5px 9px;font:600 11px/1 var(--body);letter-spacing:.2em;text-transform:uppercase;transform:rotate(-12deg)}
+
+@media (max-width:900px){.s2{grid-template-columns:1fr;gap:8px}.tagcol{position:static;width:min(100%,380px);margin:0 auto}}
+@media (max-width:520px){.panel{padding:22px 18px}.cal{gap:4px}.day{min-height:56px;padding:6px}.day .num{font-size:19px}.day .mo,.day .cnt i{display:none}
+  .rail{grid-template-columns:repeat(auto-fill,minmax(104px,1fr));column-gap:8px}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="app"><div class="wrap"><p class="loading">Loading…</p></div></div>
+
+<script>
+const API = "https://eahezpmodhvfxeixenzd.supabase.co/functions/v1/api";
+const TZ = "America/Vancouver";
+const DOWS = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"], DOWL = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+const MONS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+const st = { members: [], hosts: {}, slots: [], m: null, d: null, t: null, busy: false, err: "", done: null, loadErr: "" };
+
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+const join = a => a.length < 3 ? a.join(" & ") : a.slice(0, -1).join(", ") + " & " + a[a.length - 1];
+const names = ids => join(ids.map(id => st.hosts[id] || id));
+
+// Vancouver-time pieces for an ISO timestamp
+const PARTS = new Intl.DateTimeFormat("en-CA", { timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hourCycle: "h23" });
+function local(iso) {
+  const p = Object.fromEntries(PARTS.formatToParts(new Date(iso)).map(x => [x.type, x.value]));
+  return { key: `${p.year}-${p.month}-${p.day}`, min: (+p.hour % 24) * 60 + +p.minute };
+}
+const keyDate = k => { const [y, m, d] = k.split("-").map(Number); return new Date(Date.UTC(y, m - 1, d)); };
+const dateKey = dt => dt.toISOString().slice(0, 10);
+const fmtT = min => { let h = Math.floor(min / 60); const ap = h >= 12 ? "PM" : "AM"; h = h % 12 || 12; return `${h}:${String(min % 60).padStart(2, "0")} ${ap}`; };
+const fmtD = (k, long) => { const d = keyDate(k); return `${(long ? DOWL : DOWS)[d.getUTCDay()]}, ${MONS[d.getUTCMonth()]} ${d.getUTCDate()}`; };
+
+const member = () => st.members.find(x => x.id === st.m);
+const need = () => member()?.tier === "coord" ? 2 : 1; // coordinators + first year reps need two or more of us
+const usable = () => st.slots.filter(s => s.free.length >= need());
+const byDay = () => { const o = {}; for (const s of usable()) (o[s.local.key] ||= []).push(s); return o; };
+const chosen = () => st.slots.find(s => s.start === st.t);
+
+// calendar spans Monday of the first open week to Sunday of the last
+function calendarDays() {
+  if (!st.slots.length) return [];
+  const keys = st.slots.map(s => s.local.key).sort();
+  const first = keyDate(keys[0]), last = keyDate(keys[keys.length - 1]);
+  first.setUTCDate(first.getUTCDate() - ((first.getUTCDay() + 6) % 7));
+  last.setUTCDate(last.getUTCDate() + (7 - last.getUTCDay()) % 7);
+  const out = [];
+  for (const d = new Date(first); d <= last; d.setUTCDate(d.getUTCDate() + 1)) out.push(dateKey(d));
+  return out;
+}
+
+async function api(action, body) {
+  const r = await fetch(body ? API : `${API}?action=${action}`, body
+    ? { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action, ...body }) }
+    : {});
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j.error || "Something went wrong. Try again in a sec.");
+  return j;
+}
+async function loadSlots() {
+  const { slots } = await api("slots");
+  st.slots = (slots || []).map(s => ({ ...s, local: local(s.start) }));
+}
+
+const head = `<header><div class="brandrow"><img src="logo-ink.png" alt="F&amp;R" class="logo"><span class="eyebrow">CUS Fashion &amp; Retail</span></div>
+  <p class="eyebrow">Exec check-ins · Fall 2026</p><h1>Book your <em>check-in</em></h1><p class="lede">Fifteen minutes on Google Meet with the internal team.</p></header>`;
+
+/* screen 1: who are you */
+function S1() {
+  if (st.loadErr) return `<div class="wrap">${head}<p class="empty" style="margin-top:44px">${esc(st.loadErr)}</p></div>`;
+  const card = m => `<button class="person" data-a="mem" data-v="${m.id}"${m.booked ? " disabled" : ""}><span class="k"><span class="sb"></span></span>
+    <span class="v"><span class="pname">${esc(m.first_name)} ${esc(m.last_name)}</span><span class="prole">${m.booked ? "Already booked" : esc(m.role)}</span></span><span class="arr" aria-hidden="true"></span></button>`;
+  const group = tier => st.members.filter(m => m.tier === tier).map(card).join("");
+  return `<div class="wrap">${head}<section class="pick"><div class="step-h"><span class="step-n">01</span><h2>Who are you?</h2></div>
+    <p class="eyebrow grp">VPs</p><div class="people">${group("vp")}</div>
+    <p class="eyebrow grp">Coordinators &amp; first year reps</p><div class="people">${group("coord")}</div></section></div>`;
+}
+
+/* screen 2: day, time, tag */
+function S2() {
+  const m = member(), days = byDay(), done = st.done;
+  let left;
+  if (done) {
+    const l = local(done.starts_at);
+    left = `<section class="panel stitch donep"><p class="eyebrow">You’re booked</p><h2>See you <em>${DOWL[keyDate(l.key).getUTCDay()]}.</em></h2>
+      <p class="note">Your Google Calendar invite with the Meet link is on its way to your inbox. Need a different time? Message Justin, Adi or Mavis on Slack.</p></section>`;
+  } else if (!usable().length) {
+    left = `<section class="panel stitch"><p class="empty">There are no open times right now. Message Justin, Adi or Mavis on Slack and we’ll sort one out.</p></section>`;
+  } else {
+    const cal = `<div class="cal">` + ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].map(x => `<div class="dow">${x}</div>`).join("") +
+      calendarDays().map((k, i) => {
+        const d = keyDate(k), n = (days[k] || []).length, on = st.d === k;
+        const mo = i === 0 || d.getUTCDate() === 1 ? MONS[d.getUTCMonth()] : "";
+        return `<button class="day${on ? " on" : ""}" data-a="day" data-v="${k}"${n ? "" : " disabled"} aria-pressed="${on}" aria-label="${fmtD(k)}, ${n} open times">
+          <span class="mo">${mo}</span><span class="num">${d.getUTCDate()}</span><span class="cnt">${n ? `<b>${n}</b><i> open</i>` : "None"}</span></button>`;
+      }).join("") + `</div>`;
+    const keys = Object.keys(days).sort(), range = `${fmtD(keys[0]).slice(5)} to ${fmtD(keys[keys.length - 1]).slice(5)}`;
+    const times = st.d == null ? `<p class="empty">Choose a day to see the open times.</p>` :
+      `<p class="hint">${need() === 2 ? "Showing times when at least two of us are free. Each tag shows who." : "Each tag shows which of us are free."}</p>
+       <div class="rail">${(days[st.d] || []).map(s => {
+         const f = fmtT(s.local.min), w = names(s.free), on = st.t === s.start;
+         return `<button class="htag${on ? " on" : ""}" data-a="time" data-v="${s.start}" aria-pressed="${on}" aria-label="${f}, with ${esc(w)}">
+           <span class="t">${f.slice(0, -3)}</span><span class="s">${f.slice(-2)}</span><span class="w">${esc(w)}</span></button>`;
+       }).join("")}</div>`;
+    left = `<section class="panel stitch"><div class="step-h"><span class="step-n">02</span><h2>Pick a day</h2><span class="aside">${range}</span></div>${cal}</section>
+      <section class="panel stitch"><div class="step-h"><span class="step-n">03</span><h2>Pick a time</h2>${st.d ? `<span class="aside">${fmtD(st.d)}</span>` : ""}</div>${times}</section>`;
+  }
+
+  const row = (k, v) => `<div class="lt-row"><dt>${k}</dt><dd>${v || '<span class="ph">Not picked yet</span>'}</dd></div>`;
+  const sel = done ? { local: local(done.starts_at), free: done.host_ids } : chosen();
+  const withTxt = sel ? esc(names(sel.free)) : `<span class="ph">${need() === 2 ? "At least two of us" : "Whoever’s free"}</span>`;
+  const meet = done?.meet_link ? row("Meet", `<a href="${esc(done.meet_link)}" target="_blank" rel="noopener">Open link</a>`) : "";
+  const tag = `<div class="ltag${done ? " is-done" : ""}"><span class="eye"></span>${done ? '<span class="stamp">Confirmed</span>' : ""}
+    <p class="eyebrow">${done ? "Booked" : "Exec check-in"}</p><p class="lt-name">${esc(m.first_name)} ${esc(m.last_name)}</p>
+    ${done ? `<div class="spacer"></div>` : `<button class="notyou" data-a="back">Not you?</button>`}
+    <dl>${row("Role", esc(m.role))}${row("Day", sel ? fmtD(sel.local.key) : "")}${row("Time", sel ? fmtT(sel.local.min) + " · 15 min" : "")}${row("With", withTxt)}${meet}</dl>
+    ${done ? `<p class="lt-help">Check your inbox for the invite.</p>` :
+      `<button class="btn" data-a="book"${!sel || st.busy ? " disabled" : ""}>${st.busy ? "Booking…" : "Book it"}</button>
+       ${st.err ? `<p class="lt-err" role="alert">${esc(st.err)}</p>` : `<p class="lt-help">${sel ? "The invite goes straight to your inbox." : "Pick a day and a time to book."}</p>`}`}
+    <div class="bc"></div><p class="code">F&amp;R · Fall 2026</p></div>`;
+  return `<div class="wrap">${head}<div class="s2"><div class="left">${left}</div><aside class="tagcol" aria-label="Your booking">${tag}</aside></div></div>`;
+}
+
+/* wiring */
+const app = document.getElementById("app");
+let lastScreen = null;
+function render() {
+  const s = st.m == null ? 1 : 2;
+  app.innerHTML = s === 1 ? S1() : S2();
+  if (s === lastScreen) app.firstElementChild.style.animation = "none";
+  else if (lastScreen !== null) scrollTo(0, 0);
+  lastScreen = s;
+}
+
+async function book() {
+  if (!chosen() || st.busy) return;
+  st.busy = true; st.err = ""; render();
+  try {
+    const { booking } = await api("book", { member_id: st.m, start: st.t });
+    st.done = booking;
+    const me = member(); if (me) me.booked = true;
+    scrollTo({ top: 0, behavior: "smooth" });
+  } catch (e) {
+    st.err = e.message; st.t = null;
+    try { await loadSlots(); if (st.d && !byDay()[st.d]) st.d = null; } catch (_) {}
+  }
+  st.busy = false; render();
+}
+
+document.addEventListener("click", async e => {
+  const b = e.target.closest("button[data-a]");
+  if (!b || b.disabled) return;
+  const a = b.dataset.a, v = b.dataset.v;
+  if (st.done) return;
+  if (a === "book") return book();
+  if (a === "mem") {
+    st.m = +v; st.d = null; st.t = null; st.err = ""; render();
+    loadSlots().then(render).catch(() => {}); // refresh times in the background
+    return;
+  }
+  if (a === "back") { st.m = null; st.d = null; st.t = null; st.err = ""; }
+  else if (a === "day") { st.d = v; st.t = null; st.err = ""; }
+  else if (a === "time") { st.t = v; st.err = ""; }
+  render();
+});
+
+(async () => {
+  try {
+    const [roster] = await Promise.all([api("roster"), loadSlots()]);
+    st.members = roster.members || [];
+    st.hosts = Object.fromEntries((roster.hosts || []).map(h => [h.id, h.name]));
+  } catch (e) {
+    st.loadErr = "We couldn’t load the booking page. Refresh to try again, or message Justin, Adi or Mavis on Slack.";
+  }
+  render();
+})();
+</script>
+</body>
+</html>

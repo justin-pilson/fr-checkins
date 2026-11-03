@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>F&amp;R Check-in Dashboard</title>
+<link rel="icon" href="logo-ink.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&display=swap">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+<main class="wrap">
+  <header class="top">
+    <div class="brandrow"><img src="logo-ink.png" alt="F&amp;R" class="logo"><span class="eyebrow">Internal team only</span></div>
+    <h1>Check-in <em>dashboard</em></h1>
+  </header>
+
+  <section class="panel stitch gate" id="gate">
+    <h2>Enter the passcode</h2>
+    <form id="gate-form">
+      <label for="pass" class="sr">Passcode</label>
+      <div class="frow">
+        <input id="pass" type="password" autocomplete="current-password" placeholder="Passcode" required>
+        <button class="btn" type="submit">Open dashboard</button>
+      </div>
+      <p class="error" id="gate-error" hidden></p>
+    </form>
+  </section>
+
+  <div id="dash" hidden>
+    <div class="banner" id="google"></div>
+
+    <section class="score panel stitch">
+      <div class="score-num"><b id="booked-count">0</b><span id="booked-of">of 0 booked</span></div>
+      <div class="score-text">
+        <div class="bar"><i id="bar"></i></div>
+        <p id="score-sub"></p>
+      </div>
+    </section>
+
+    <div class="cols">
+      <section class="panel stitch">
+        <div class="sec-h"><h2>Still needs to <em>book</em></h2></div>
+        <div id="todo"></div>
+        <button class="btn small" id="copy-reminder" type="button">Copy a reminder message</button>
+        <p class="hint" id="copied" hidden>Copied. Paste it in the exec chat.</p>
+      </section>
+
+      <section class="panel stitch">
+        <div class="sec-h"><h2>Booked <em>check-ins</em></h2></div>
+        <div class="filters" id="filters" role="group" aria-label="Show check-ins for"></div>
+        <div id="booked"></div>
+      </section>
+    </div>
+
+    <details class="panel settings">
+      <summary>Settings</summary>
+      <p class="hint">Booking link to share with execs</p>
+      <div class="frow"><input id="share-link" readonly aria-label="Booking link"><button class="btn small" id="copy-link" type="button">Copy</button></div>
+      <form id="pass-form">
+        <label for="newpass" class="hint">Change the dashboard passcode</label>
+        <div class="frow"><input id="newpass" type="text" minlength="6" placeholder="New passcode (6+ characters)"><button class="btn small" type="submit">Save</button></div>
+        <p class="hint" id="pass-msg" hidden></p>
+      </form>
+    </details>
+  </div>
+</main>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script src="config.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>
